@@ -64,6 +64,7 @@ html, body {
   display: block;
   touch-action: none; /* a sideways drag flips to the next door */
 }
+#scene.is-over-lever { cursor: pointer; }
 #scene.is-dragging { cursor: grabbing; }
 
 /* ---- under the door: which figure, who built it, the way on ---------------- */

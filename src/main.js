@@ -15,6 +15,7 @@ const FOV = 22;             // long lens: close to a flat front view
 const FILL = 0.8;           // share of the viewport the door may take
 const PARALLAX = 0.45;      // how far the camera drifts with the pointer, in blocks
 const DEPTH_FADE = 0.3;     // how much each layer further back sinks into the shade
+const DEEPEST_FADE = 0.9;   // ...but a deep door fades slower, so its last layer stops at this
 const SUN_ELEVATION = 24;   // degrees above the line of sight
 const SHADOW = 0.5;         // 0 = no cast shadows, 1 = black
 const SLIDE_MS = 460;       // one door sliding out while the next slides in
@@ -99,7 +100,30 @@ class Slot {
     this.pivot.add(this.player.group);
     this.phase = 0;
     this.phaseStart = performance.now();
+    this.manual = false;  // the visitor has taken over the lever: no more loop
+    this.running = false; // a clip is playing right now
     this.player.setClip(phases[0].clip);
+  }
+
+  // Flips the lever by hand. Does nothing while the door is still moving. The
+  // first flip turns the automatic loop off for this door.
+  toggle(now) {
+    if (this.running) return false;
+    this.manual = true;
+    this.running = true;
+    this.phaseStart = now;
+    return true;
+  }
+
+  // Where the door's lever (or button) is right now, in world space.
+  inputs() {
+    const { player } = this;
+    const out = [];
+    for (let i = 0; i < player.states.length; i++) {
+      const name = player.door.palette[player.states[i]]?.name ?? '';
+      if (name === 'lever' || name.endsWith('_button')) out.push(player.group.localToWorld(player.cellPosition(i)));
+    }
+    return out;
   }
 
   // How far the camera stands from the front of the door to fit it into the view.
@@ -117,9 +141,13 @@ class Slot {
     }
     const { clip, hold } = phases[this.phase];
     if (player.clipName !== clip) player.setClip(clip);
+    // By hand a clip starts at the flip and the door then waits for the next
+    // one; in the loop it starts after the hold and the next phase follows.
+    if (this.manual && !this.running) return;
     const tickMs = Math.min(TICK_MS, MAX_CLIP_MS / player.length);
-    const ticks = (now - this.phaseStart - hold) / tickMs;
+    const ticks = (now - this.phaseStart - (this.manual ? 0 : hold)) / tickMs;
     player.setTime(ticks);
+    this.running = ticks > 0 && ticks < player.length;
     if (ticks >= player.length) {
       this.phase = (this.phase + 1) % phases.length;
       this.phaseStart = now;
@@ -230,9 +258,34 @@ function stepMove(now) {
   else if (move.to) commit(); // otherwise the door is still loading: wait for it
 }
 
+// The lever of the door on stage can be flipped by hand: a click or a tap on
+// it, or anywhere within a block of it, since it is a small thing to hit.
+const LEVER_REACH = 0.8; // blocks
+const spot = new THREE.Vector3();
+function overLever(e) {
+  if (move || !layout.unitsPerPixel) return false;
+  const box = canvas.getBoundingClientRect();
+  const reach = LEVER_REACH / layout.unitsPerPixel;
+  return current.inputs().some((at) => {
+    spot.copy(at).project(camera);
+    const x = box.left + (spot.x * 0.5 + 0.5) * box.width;
+    const y = box.top + (-spot.y * 0.5 + 0.5) * box.height;
+    return Math.hypot(e.clientX - x, e.clientY - y) < reach;
+  });
+}
+let swiped = false; // the click that ends a swipe is not a click on the lever
+canvas.addEventListener('click', (e) => {
+  if (swiped) { swiped = false; return; }
+  if (overLever(e)) current.toggle(performance.now());
+});
+canvas.addEventListener('pointermove', (e) => {
+  if (e.pointerType === 'mouse') canvas.classList.toggle('is-over-lever', !drag?.active && overLever(e));
+});
+
 // A sideways drag anywhere on the stage moves the doors with the pointer.
 let drag = null;
 canvas.addEventListener('pointerdown', (e) => {
+  swiped = false;
   if (ids.length < 2 || e.button || move) return;
   drag = { id: e.pointerId, x0: e.clientX, x: e.clientX, t: e.timeStamp, speed: 0, active: false };
 });
@@ -242,6 +295,7 @@ window.addEventListener('pointermove', (e) => {
   if (!drag.active) {
     if (Math.abs(dx) < SWIPE_START) return;
     drag.active = true;
+    swiped = true;
     try { canvas.setPointerCapture(e.pointerId); } catch { /* pointer already gone */ }
     canvas.classList.add('is-dragging');
   }
@@ -322,8 +376,10 @@ function frame(now) {
   else aimSun(current.pivot.position.x, current.reach, current.reach);
 
   // The front layer stays clean; every block further back fades by DEPTH_FADE.
+  // Doors up to three layers deep look exactly as before; deeper ones spread
+  // the same fade over their whole depth instead of going black half way in.
   scene.fog.near = fit + 1;
-  scene.fog.far = scene.fog.near + 1 / DEPTH_FADE;
+  scene.fog.far = scene.fog.near + Math.max(1 / DEPTH_FADE, depth / DEEPEST_FADE);
 
   current.play(now, debug.freeze);
   other?.play(now, null);
