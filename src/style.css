@@ -1,0 +1,310 @@
+/* Palette is taken from the blocks in the scene. */
+:root {
+  --sky-top: #7fb2f2;
+  --sky-low: #dcecff;
+  --quartz: #f5f2ea;
+  --quartz-rim: #d9d3c5;
+  --quartz-side: #b9b2a2;
+  --lime: #8bd044;
+  --lime-rim: #69a82d;
+  --lime-side: #4d8320;
+  --teal: #1fa5a1;
+  --teal-rim: #16827f;
+  --teal-side: #0f5f5d;
+  --amber: #e8a52b;
+  --ink: #1c2536;
+  --ink-soft: #55607a;
+  --free: #b9b3a6;
+
+  --display: 'Jersey 15', ui-monospace, monospace;
+  --body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --px: 3px;             /* one "pixel" of the interface */
+  --panel-w: min(460px, 44vw);
+  --panel-h: 68svh;
+  --slide: 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--sky-low);
+  color: var(--ink);
+  font-family: var(--body);
+}
+
+/* ---- layout: one screen, never scrolls ---------------------------------- */
+
+.app {
+  height: 100svh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-areas: 'stage panel' 'actions panel';
+  background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-low) 100%);
+}
+
+.stage { grid-area: stage; position: relative; min-height: 0; }
+
+#scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.actions {
+  grid-area: actions;
+  display: flex;
+  justify-content: center;
+  gap: clamp(10px, 2.4vw, 22px);
+  padding: 6px 16px calc(clamp(18px, 4svh, 40px) + env(safe-area-inset-bottom));
+}
+
+/* ---- block buttons ------------------------------------------------------ */
+
+.block-btn {
+  --face: var(--quartz);
+  --rim: var(--quartz-rim);
+  --side: var(--quartz-side);
+  --lift: calc(var(--px) * 2);
+  appearance: none;
+  border: var(--px) solid var(--rim);
+  border-radius: 0;
+  background: var(--face);
+  color: var(--ink);
+  font: 400 clamp(26px, 2.5vw, 34px) / 1 var(--display);
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: clamp(54px, 7svh, 68px);
+  padding: 0 clamp(12px, 2.2vw, 28px);
+  --cell: clamp(5px, 0.55vw, 7px);
+  cursor: pointer;
+  transform: translateY(calc(var(--lift) * -1));
+  box-shadow: 0 var(--lift) 0 var(--side);
+  transition: transform 90ms ease-out, box-shadow 90ms ease-out;
+  -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
+}
+
+.block-btn.is-lime { --face: var(--lime); --rim: var(--lime-rim); --side: var(--lime-side); }
+.block-btn.is-teal { --face: var(--teal); --rim: var(--teal-rim); --side: var(--teal-side); color: #fff; }
+
+.block-btn:hover { --lift: calc(var(--px) * 3); }
+.block-btn:active,
+.block-btn[aria-expanded='true'] { --lift: 0px; }
+
+.block-btn:focus-visible,
+.close:focus-visible,
+.copy:focus-visible {
+  outline: var(--px) solid var(--ink);
+  outline-offset: var(--px);
+}
+
+/* A figure drawn the way the doors draw it: nine cells, filled or empty. */
+.glyph {
+  display: grid;
+  grid-template-columns: repeat(3, var(--cell, 5px));
+  gap: 1px;
+  flex: none;
+}
+.glyph i { width: var(--cell, 5px); height: var(--cell, 5px); background: currentColor; opacity: 0.16; }
+.glyph i.on { opacity: 1; }
+.glyph.is-inline { display: inline-grid; vertical-align: middle; margin: -2px 2px 0 0; }
+p code { font: 14px / 1.3 ui-monospace, Menlo, Consolas, monospace; white-space: nowrap; }
+
+/* ---- panel -------------------------------------------------------------- */
+
+.panel {
+  grid-area: panel;
+  position: relative;
+  width: 0;
+  overflow: hidden;
+  background: var(--quartz);
+  transition: width var(--slide);
+}
+.app.is-open .panel { width: var(--panel-w); }
+
+.panel-inner {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--panel-w);
+  padding: clamp(20px, 3vw, 36px);
+  border-left: var(--px) solid var(--quartz-rim);
+  overflow-y: auto;
+}
+
+.close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: 400 40px / 1 var(--display);
+  cursor: pointer;
+}
+
+h2 {
+  margin: 0 44px 18px 0;
+  font: 400 clamp(38px, 4vw, 48px) / 0.95 var(--display);
+  text-wrap: balance;
+}
+
+p, li { font-size: 16px; line-height: 1.55; max-width: 46ch; }
+p { margin: 0 0 12px; }
+
+.switch { display: inline-flex; margin: 0 52px 14px 0; border: var(--px) solid var(--ink); }
+.switch button {
+  border: 0;
+  padding: 6px 14px 7px;
+  background: none;
+  color: var(--ink);
+  font: 400 24px / 1 var(--display);
+  cursor: pointer;
+}
+.switch button[aria-selected='true'] { background: var(--ink); color: var(--quartz); }
+.switch button:focus-visible { outline: var(--px) solid var(--lime-side); outline-offset: var(--px); }
+
+.steps { margin: 4px 0 18px; padding: 0; list-style: none; counter-reset: step; }
+.steps li {
+  counter-increment: step;
+  position: relative;
+  padding: 0 0 12px 40px;
+}
+.steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: -1px;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  background: var(--lime);
+  border: var(--px) solid var(--lime-rim);
+  font: 400 22px / 1 var(--display);
+}
+
+.inline {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.inline:focus-visible { outline: var(--px) solid var(--ink); outline-offset: 2px; }
+
+.steps code { font: 14px / 1.3 ui-monospace, Menlo, Consolas, monospace; white-space: nowrap; }
+
+h3 { margin: 0 0 4px; font: 400 26px / 1 var(--display); }
+.rules { margin: 0 0 12px; padding: 0; list-style: none; }
+.rules:last-child { margin-bottom: 0; }
+.rules li { position: relative; padding-left: 18px; font-size: 15px; line-height: 1.4; margin-bottom: 2px; }
+.rules li::before { content: ''; position: absolute; left: 0; top: 0.42em; width: 8px; height: 8px; background: var(--ink); }
+
+/* ---- progress map ------------------------------------------------------- */
+
+.legend-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 18px;
+  margin: 0 0 14px;
+  font-size: 14px;
+}
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; padding: 0; list-style: none; }
+.legend li { display: flex; align-items: center; gap: 7px; font-size: 14px; }
+.legend li::before { content: ''; width: 12px; height: 12px; background: var(--swatch); }
+
+.map { display: block; width: 100%; touch-action: none; cursor: crosshair; }
+
+/* Fixed rows: the block never changes height while you move across the map. */
+.detail {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: 34px 24px 18px 32px;
+  gap: 4px 12px;
+  align-items: center;
+  margin-top: 16px;
+  font-size: 15px;
+}
+.detail.is-message { display: block; min-height: 120px; }
+.detail .glyph { --cell: 10px; gap: 2px; color: var(--tone, var(--ink)); }
+.detail .code { font: 400 32px / 1 var(--display); letter-spacing: 0.04em; }
+.detail .who,
+.detail .where,
+.detail .tp { grid-column: 1 / -1; min-width: 0; }
+.detail .who { color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player { color: var(--ink); }
+.head {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
+  vertical-align: -3px;
+  background: var(--free);
+  image-rendering: pixelated;
+}
+.detail .where { align-self: end; color: var(--ink-soft); font-size: 13px; line-height: 1; }
+.detail .tp { display: flex; align-items: center; gap: 10px; }
+.detail code {
+  font: 14px / 1.3 ui-monospace, Menlo, Consolas, monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.copy {
+  flex: none;
+  border: 0;
+  padding: 6px 10px;
+  background: var(--ink);
+  color: var(--quartz);
+  font: 400 20px / 1 var(--display);
+  cursor: pointer;
+}
+
+/* ---- phones: the panel rises from the bottom ---------------------------- */
+
+@media (max-width: 760px) {
+  :root { --panel-w: 100vw; }
+
+  .app {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto auto;
+    grid-template-areas: 'stage' 'actions' 'panel';
+  }
+
+  .actions { padding-bottom: calc(14px + env(safe-area-inset-bottom)); }
+  .block-btn { flex: 1 1 0; justify-content: center; max-width: 150px; padding: 0 8px; }
+
+  .panel { width: auto; height: 0; transition: height var(--slide); }
+  .app.is-open .panel { width: auto; height: var(--panel-h); }
+  .map { max-width: calc((var(--panel-h) - 272px) * 2); }
+
+  .panel-inner {
+    inset: 0;
+    width: auto;
+    height: var(--panel-h);
+    border-left: 0;
+    border-top: var(--px) solid var(--quartz-rim);
+    padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel, .block-btn { transition: none; }
+}

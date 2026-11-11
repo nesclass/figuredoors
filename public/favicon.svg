@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <!-- The About button: a quartz block with the 111 101 111 figure on it. -->
+  <rect width="32" height="32" fill="#d9d3c5"/>
+  <rect x="2" y="2" width="28" height="28" fill="#f5f2ea"/>
+  <g fill="#1c2536">
+    <rect x="4" y="4" width="7" height="7"/>
+    <rect x="12.5" y="4" width="7" height="7"/>
+    <rect x="21" y="4" width="7" height="7"/>
+    <rect x="4" y="12.5" width="7" height="7"/>
+    <rect x="12.5" y="12.5" width="7" height="7" opacity="0.16"/>
+    <rect x="21" y="12.5" width="7" height="7"/>
+    <rect x="4" y="21" width="7" height="7"/>
+    <rect x="12.5" y="21" width="7" height="7"/>
+    <rect x="21" y="21" width="7" height="7"/>
+  </g>
+</svg>

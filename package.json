@@ -1,0 +1,19 @@
+{
+  "name": "figuredoors",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run doors && vite build",
+    "preview": "vite preview",
+    "doors": "node tools/build-doors.mjs"
+  },
+  "dependencies": {
+    "@fontsource/jersey-15": "^5.3.0",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "vite": "^8.3.7"
+  }
+}
