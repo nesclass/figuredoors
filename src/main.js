@@ -65,6 +65,8 @@ let index = Math.max(0, ids.indexOf(FIRST));
 if (manifest.some((d) => d.id === wanted)) {
   ids = [wanted];
   index = 0;
+  // A link to one door is a viewer for that door: the project's own buttons go.
+  document.querySelector('#app').classList.add('is-solo');
 }
 const neighbour = (dir) => ids[(index + dir + ids.length) % ids.length];
 

@@ -156,6 +156,10 @@ html, body {
   padding: 6px 16px calc(clamp(18px, 4svh, 40px) + env(safe-area-inset-bottom));
 }
 
+/* Opened by a link to one door: only the door and its caption stay. */
+.app.is-solo .actions { display: none; }
+.app.is-solo .pager { margin-bottom: calc(clamp(18px, 4svh, 34px) + var(--px) + env(safe-area-inset-bottom)); }
+
 /* ---- block buttons ------------------------------------------------------ */
 
 .block-btn {
