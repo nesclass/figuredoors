@@ -12,6 +12,11 @@
 //   adds a lever the recording box missed (coordinates relative to the box
 //   origin, may lie outside it). It flips on the first tick of each clip and is
 //   on while the door is closed.
+//   {"carousel": false}
+//   keeps the door out of the carousel (a test, a joke door).
+//   {"remove": ["magenta_stained_glass"]}
+//   drops blocks that stood in the box but are not part of the door (a roof,
+//   plot decoration). Layers left empty on the outside are cut off.
 //
 // Output door file:
 //   size     [sx, sy, sz]; cell index = x + sx * (z + sz * y)
@@ -22,13 +27,19 @@
 //            mov  [[cell, state, dir, extending, progress, source], ...] - blocks in motion
 //                 dir: 0 down, 1 up, 2 north, 3 south, 4 west, 5 east (piston facing)
 
-import { readdirSync, readFileSync, writeFileSync, mkdirSync, existsSync, statSync, rmSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync, mkdirSync, existsSync, statSync, rmSync, copyFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { openAssets, createResolver } from './mc-assets.mjs';
+import { softLook, softerLook } from './soft-look.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const REC_DIR = join(ROOT, 'recordings');
 const OUT_DIR = join(ROOT, 'public', 'doors');
+// Game looks: the same doors with the game's own blocks, models and textures,
+// plain or with a resource pack on top. Built only where a Minecraft install is
+// found; see tools/mc-assets.mjs.
+const MC_DIR = join(ROOT, 'public', 'mc');
 
 // ---- block unification -------------------------------------------------------
 
@@ -41,7 +52,7 @@ const DOOR_BLOCKS = new Set([
 ]);
 
 // Plain full blocks that only hold redstone in place: all become "casing".
-const CASING_RE = /(_concrete|_concrete_powder|_wool|_terracotta|_planks|bricks)$/;
+const CASING_RE = /(_concrete|_concrete_powder|_wool|_terracotta|_planks|bricks|_wood|_log)$/;
 const CASING_BLOCKS = new Set([
   'stone', 'cobblestone', 'smooth_stone', 'deepslate', 'cobbled_deepslate', 'andesite',
   'polished_andesite', 'granite', 'polished_granite', 'dirt', 'sandstone', 'smooth_sandstone',
@@ -67,6 +78,19 @@ const KEEP_PROPS = {
   redstone_block: [],
   furnace: ['facing', 'lit'],
   composter: ['level'],
+  hopper: ['facing'],
+  bell: ['facing', 'attachment'],
+  slab: ['type'],
+  target: [],
+  tnt: [],
+  leaves: [],
+  crying_obsidian: [],
+  obsidian: [],
+  dropper: ['facing'],
+  rail: ['shape'],
+  powered_rail: ['shape', 'powered'],
+  detector_rail: ['shape', 'powered'],
+  lightning_rod: ['facing', 'powered'],
   fence: ['east', 'west', 'north', 'south'],
   door: [], casing: [], input: [], glass: [],
 };
@@ -78,6 +102,9 @@ function unifyName(rawName) {
   if (name === 'glass' || name.endsWith('_glass')) return 'glass';
   if (name.endsWith('copper_bulb')) return 'copper_bulb';
   if (name.endsWith('_fence')) return 'fence';
+  if (name.endsWith('_slab')) return 'slab';
+  if (name.endsWith('_leaves')) return 'leaves';
+  if (name.endsWith('lightning_rod')) return 'lightning_rod';
   if (CASING_RE.test(name) || CASING_BLOCKS.has(name)) return 'casing';
   return name;
 }
@@ -90,6 +117,15 @@ function unifyState(rawName, rawProps, isInput) {
   for (const [k, v] of Object.entries(rawProps ?? {})) {
     if (!keep || keep.includes(k)) props[k] = String(v);
   }
+  return Object.keys(props).length ? { name, props } : { name };
+}
+
+// The "mc" look keeps every block as it was recorded.
+function exactState(rawName, rawProps) {
+  const name = rawName.replace(/^minecraft:/, '');
+  if (AIR.has(name)) return { name: 'air' };
+  const props = {};
+  for (const [k, v] of Object.entries(rawProps ?? {})) props[k] = String(v);
   return Object.keys(props).length ? { name, props } : { name };
 }
 
@@ -165,8 +201,12 @@ function findInputCells(data, snapshot) {
   return out;
 }
 
-function buildClip(file, intern, meta, startsPowered) {
+function buildClip(file, intern, meta, startsPowered, toState) {
   let data = readRecording(file);
+  if (meta.remove) {
+    const gone = new Set(meta.remove);
+    data.palette = data.palette.map((p) => (gone.has(p.name.replace(/^minecraft:/, '')) ? { name: 'air' } : p));
+  }
   if (meta.lever) data = addLever(data, meta.lever, startsPowered);
   const { snapshots, first, last } = data;
   const inputCells = findInputCells(data, snapshots[0]);
@@ -178,13 +218,13 @@ function buildClip(file, intern, meta, startsPowered) {
     snapshot.forEach((s, i) => {
       const st = data.palette[s];
       if (st.name !== 'moving_piston') {
-        statics[i] = intern(unifyState(st.name, st.props, inputCells.has(i)));
+        statics[i] = intern(toState(st.name, st.props, inputCells.has(i)));
         return;
       }
       statics[i] = airId;
       const nbt = st.nbt;
       if (!nbt?.blockState) return;
-      const carried = intern(unifyState(nbt.blockState.Name, nbt.blockState.Properties, false));
+      const carried = intern(toState(nbt.blockState.Name, nbt.blockState.Properties, false));
       mov.push([i, carried, num(nbt.facing), num(nbt.extending) ? 1 : 0, num(nbt.progress), num(nbt.source) ? 1 : 0]);
     });
     return { statics, mov };
@@ -206,9 +246,42 @@ function buildClip(file, intern, meta, startsPowered) {
   return { clip: { start, ticks }, end: prev.statics, data };
 }
 
+// Shrinks the box to the cells that ever hold a block, so the camera frames the
+// door and not the air around it.
+function cropToContent(size, clips, airId) {
+  const [sx, , sz] = size;
+  const xyz = (i) => [i % sx, Math.floor(i / (sx * sz)), Math.floor(i / sx) % sz];
+  const lo = [Infinity, Infinity, Infinity], hi = [-1, -1, -1];
+  const mark = (i) => xyz(i).forEach((v, k) => { lo[k] = Math.min(lo[k], v); hi[k] = Math.max(hi[k], v); });
+  for (const clip of clips) {
+    clip.start.forEach((s, i) => { if (s !== airId) mark(i); });
+    for (const { set, mov } of clip.ticks) {
+      for (let i = 0; i < set.length; i += 2) if (set[i + 1] !== airId) mark(set[i]);
+      for (const m of mov) mark(m[0]);
+    }
+  }
+  const out = hi.map((v, k) => v - lo[k] + 1);
+  if (out.every((v, k) => v === size[k])) return size;
+  const inside = (p) => p.every((v, k) => v >= lo[k] && v <= hi[k]);
+  const move = (i) => { const [x, y, z] = xyz(i); return (x - lo[0]) + out[0] * ((z - lo[2]) + out[2] * (y - lo[1])); };
+  for (const clip of clips) {
+    const start = new Array(out[0] * out[1] * out[2]);
+    clip.start.forEach((s, i) => { if (inside(xyz(i))) start[move(i)] = s; });
+    clip.start = start;
+    for (const tick of clip.ticks) {
+      const set = [];
+      for (let i = 0; i < tick.set.length; i += 2) if (inside(xyz(tick.set[i]))) set.push(move(tick.set[i]), tick.set[i + 1]);
+      tick.set = set;
+      for (const m of tick.mov) m[0] = move(m[0]);
+    }
+  }
+  return out;
+}
+
 // ---- main --------------------------------------------------------------------
 
-function buildDoor(id) {
+function buildDoor(id, exact = false) {
+  const toState = exact ? exactState : unifyState;
   const dir = join(REC_DIR, id);
   const palette = [];
   const index = new Map();
@@ -220,20 +293,22 @@ function buildDoor(id) {
 
   const metaFile = join(dir, 'door.json');
   const meta = existsSync(metaFile) ? JSON.parse(readFileSync(metaFile, 'utf8')) : {};
-  const close = buildClip(join(dir, 'close.json'), intern, meta, false);
-  const open = buildClip(join(dir, 'open.json'), intern, meta, true);
+  const close = buildClip(join(dir, 'close.json'), intern, meta, false, toState);
+  const open = buildClip(join(dir, 'open.json'), intern, meta, true, toState);
   const same = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
   if (String(close.data.size) !== String(open.data.size)) throw new Error(`${id}: close and open were recorded with different boxes`);
-  if (!same(close.end, open.clip.start)) console.warn(`  ! ${id}: end of "close" differs from start of "open"`);
-  if (!same(open.end, close.clip.start)) console.warn(`  ! ${id}: end of "open" differs from start of "close"`);
+  if (!exact && !same(close.end, open.clip.start)) console.warn(`  ! ${id}: end of "close" differs from start of "open"`);
+  if (!exact && !same(open.end, close.clip.start)) console.warn(`  ! ${id}: end of "open" differs from start of "close"`);
 
   const known = new Set(Object.keys(KEEP_PROPS).concat('air'));
   const unknown = [...new Set(palette.map((p) => p.name).filter((n) => !known.has(n)))];
-  if (unknown.length) console.warn(`  ! ${id}: blocks without unification rules: ${unknown.join(', ')}`);
+  if (!exact && unknown.length) console.warn(`  ! ${id}: blocks without unification rules: ${unknown.join(', ')}`);
+
+  const size = cropToContent(close.data.size, [close.clip, open.clip], intern({ name: 'air' }));
 
   return {
     id,
-    size: close.data.size,
+    size,
     front: close.data.viewer?.facing ?? 'south',
     palette,
     clips: { close: close.clip, open: open.clip },
@@ -242,6 +317,31 @@ function buildDoor(id) {
 
 mkdirSync(OUT_DIR, { recursive: true });
 for (const f of readdirSync(OUT_DIR)) if (f.endsWith('.json')) rmSync(join(OUT_DIR, f));
+// One look per set of assets: the plain game ("vanilla") and every unpacked
+// resource pack found in packs/<name>/.
+const PACK_DIR = join(ROOT, 'packs');
+const assets = openAssets(join(ROOT, '.cache', 'mc'));
+const looks = [];
+if (assets) {
+  looks.push({ name: 'vanilla', resolver: createResolver(assets) });
+  for (const name of existsSync(PACK_DIR) ? readdirSync(PACK_DIR).sort() : []) {
+    const pack = join(PACK_DIR, name);
+    if (existsSync(join(pack, 'assets', 'minecraft'))) looks.push({ name, resolver: createResolver(assets, pack) });
+  }
+  // "soft" calms the textures down and adds direction hints; it starts from
+  // the Bare Bones pack when that is there, from the plain game otherwise.
+  const softBase = join(PACK_DIR, 'bare');
+  for (const [name, look] of [['soft', softLook], ['softer', softerLook]]) {
+    looks.push({ name, resolver: createResolver(assets, existsSync(softBase) ? softBase : undefined, look) });
+  }
+  // Rebuilt from scratch here; on a machine without the game (the site's
+  // build server) whatever is checked in under public/mc stays as it is.
+  rmSync(MC_DIR, { recursive: true, force: true });
+  mkdirSync(join(MC_DIR, 'doors'), { recursive: true });
+  mkdirSync(join(MC_DIR, 'font'), { recursive: true });
+  copyFileSync(assets.font, join(MC_DIR, 'font', 'ascii.png'));
+}
+
 const ids = readdirSync(REC_DIR).filter((d) => statSync(join(REC_DIR, d)).isDirectory()
   && existsSync(join(REC_DIR, d, 'close.json')) && existsSync(join(REC_DIR, d, 'open.json')));
 const manifest = [];
@@ -249,8 +349,36 @@ for (const id of ids.sort()) {
   const door = buildDoor(id);
   const json = JSON.stringify(door);
   writeFileSync(join(OUT_DIR, `${id}.json`), json);
-  manifest.push({ id });
+  // "carousel": false in door.json keeps a door out of the carousel: it plays
+  // only when asked for by name.
+  const metaFile = join(REC_DIR, id, 'door.json');
+  const solo = existsSync(metaFile) && JSON.parse(readFileSync(metaFile, 'utf8')).carousel === false;
+  manifest.push(solo ? { id, solo: true } : { id });
   console.log(`${id}: ${door.size.join('x')}, ${door.palette.length} states, close ${door.clips.close.ticks.length} ticks, open ${door.clips.open.ticks.length} ticks, ${(json.length / 1024).toFixed(1)} KB`);
+  if (!looks.length) continue;
+  const exact = buildDoor(id, true);
+  for (const { resolver } of looks) {
+    for (const { name, props = {} } of exact.palette) {
+      if (name === 'air') continue;
+      resolver.add(name, props);
+      // States the player makes up while a piston is travelling.
+      if (name === 'piston' || name === 'sticky_piston' || name === 'piston_head') {
+        const type = name === 'piston_head' ? props.type : name === 'sticky_piston' ? 'sticky' : 'normal';
+        for (const short of ['false', 'true']) resolver.add('piston_head', { facing: props.facing, short, type });
+        if (name !== 'piston_head') resolver.add(name, { ...props, extended: 'true' });
+      }
+    }
+  }
+  writeFileSync(join(MC_DIR, 'doors', `${id}.json`), JSON.stringify(exact));
 }
 writeFileSync(join(OUT_DIR, 'index.json'), JSON.stringify(manifest));
 console.log(`${manifest.length} door(s) -> public/doors`);
+for (const { name, resolver } of looks) {
+  const bundle = resolver.bundle();
+  mkdirSync(join(MC_DIR, name), { recursive: true });
+  writeFileSync(join(MC_DIR, name, 'blocks.json'), JSON.stringify(bundle));
+  resolver.writeTextures(join(MC_DIR, name, 'textures'));
+  for (const m of resolver.missing) console.warn(`  ! ${name}: ${m}`);
+  console.log(`look "${name}" (${bundle.version}): ${Object.keys(bundle.states).length} states, ${Object.keys(bundle.models).length} models, ${bundle.textures.length} textures -> public/mc/${name}`);
+}
+if (!looks.length) console.log('game looks skipped: no Minecraft install found (set MC_JAR to build them)');

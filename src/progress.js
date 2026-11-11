@@ -79,11 +79,15 @@ async function loadDoors() {
   return doors.map((d, i) => d ?? { bits: i.toString(2).padStart(9, '0'), builders: [], status: 'Missing', group: 'free', tp: null });
 }
 
+// The sheet is read once and shared by the map and the caption under the door.
+let sheet;
+export const loadSheet = () => (sheet ??= loadDoors());
+
 export function fillGlyph(el, bits) {
   el.replaceChildren(...[...bits].map((b) => Object.assign(document.createElement('i'), { className: b === '1' ? 'on' : '' })));
 }
 
-const spaced = (bits) => bits.replace(/(...)(?=.)/g, '$1 ');
+export const spaced = (bits) => bits.replace(/(...)(?=.)/g, '$1 ');
 
 function el(tag, props, ...children) {
   const node = Object.assign(document.createElement(tag), props);
@@ -92,7 +96,7 @@ function el(tag, props, ...children) {
 }
 
 // A nickname with the player's head in front of it.
-function player(name) {
+export function player(name) {
   const head = /^\w{1,16}$/.test(name)
     ? el('img', { className: 'head', src: HEAD_URL(name), alt: '', width: 16, height: 16 })
     : el('span', { className: 'head' });
@@ -109,6 +113,8 @@ function byline(d) {
 }
 
 // Sets up the progress section. `current` is the figure playing in the scene.
+// Resolves to {select(bits)} for following the scene, or to nothing when the
+// sheet did not load.
 export async function initProgress({ current }) {
   const count = document.querySelector('#count');
   const title = document.querySelector('#progress-title');
@@ -118,7 +124,7 @@ export async function initProgress({ current }) {
 
   let doors;
   try {
-    doors = await loadDoors();
+    doors = await loadSheet();
   } catch (err) {
     console.error(err);
     title.textContent = 'The sheet did not load';
@@ -207,4 +213,14 @@ export async function initProgress({ current }) {
   new ResizeObserver(draw).observe(map);
   draw();
   showDetail();
+
+  return {
+    select(bits) {
+      const i = parseInt(bits, 2);
+      if (Number.isNaN(i) || i === selected) return;
+      selected = i;
+      draw();
+      showDetail();
+    },
+  };
 }

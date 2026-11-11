@@ -47,7 +47,14 @@ html, body {
   background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-low) 100%);
 }
 
-.stage { grid-area: stage; position: relative; min-height: 0; }
+.stage {
+  grid-area: stage;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+.view { position: relative; min-height: 0; }
 
 #scene {
   position: absolute;
@@ -55,7 +62,70 @@ html, body {
   width: 100%;
   height: 100%;
   display: block;
+  touch-action: none; /* a sideways drag flips to the next door */
 }
+#scene.is-dragging { cursor: grabbing; }
+
+/* ---- under the door: which figure, who built it, the way on ---------------- */
+
+/* A quiet label between two small block buttons. The label is pale so it does
+   not compete with the door; the arrows are solid like every other button on
+   the page. All three are the same slab - a face of one height with a side
+   hanging below it - so their tops, bottoms and centres line up. */
+.pager {
+  justify-self: center;
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  max-width: calc(100% - 24px);
+  margin: 0 12px calc(clamp(18px, 4svh, 34px) + var(--px));
+}
+
+.caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 16px;
+  min-width: 0;
+  min-height: 40px;
+  padding: 4px 14px;
+  border: var(--px) solid rgba(217, 211, 197, 0.85);
+  background: rgba(245, 242, 234, 0.6);
+  box-shadow: 0 var(--px) 0 rgba(185, 178, 162, 0.5);
+  color: var(--ink);
+  line-height: 1;
+}
+.caption .figure { display: flex; align-items: center; gap: 10px; }
+.caption .glyph { --cell: 6px; }
+.caption .glyph:empty { display: none; }
+.caption .code { font: 400 28px / 1 var(--display); letter-spacing: 0.04em; white-space: nowrap; }
+.caption .who { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 14px; }
+.caption .who:empty { display: none; }
+.caption .player { display: flex; align-items: center; gap: 8px; color: inherit; font: 400 24px / 1 var(--display); white-space: nowrap; }
+.caption .head { width: 20px; height: 20px; margin: 0; vertical-align: 0; }
+.mc-text { display: block; image-rendering: pixelated; }
+/* The shadow is faint here, so the letters alone are centred on the head. */
+.caption .mc-text { position: relative; top: 1px; }
+
+.pager-btn {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  border: var(--px) solid var(--quartz-rim);
+  border-radius: 0;
+  background: var(--quartz);
+  color: var(--ink);
+  cursor: pointer;
+  box-shadow: 0 var(--px) 0 var(--quartz-side);
+  transition: transform 90ms ease-out, box-shadow 90ms ease-out;
+  -webkit-tap-highlight-color: transparent;
+}
+.pager-btn[hidden] { display: none; }
+.pager-btn:hover { background: #fff; }
+.pager-btn:active { transform: translateY(var(--px)); box-shadow: none; }
+.pager-btn svg { width: 8px; height: 14px; fill: currentColor; shape-rendering: crispEdges; }
 
 .actions {
   grid-area: actions;
@@ -101,6 +171,7 @@ html, body {
 .block-btn[aria-expanded='true'] { --lift: 0px; }
 
 .block-btn:focus-visible,
+.pager-btn:focus-visible,
 .close:focus-visible,
 .copy:focus-visible {
   outline: var(--px) solid var(--ink);
@@ -215,6 +286,42 @@ h3 { margin: 0 0 4px; font: 400 26px / 1 var(--display); }
 .rules li { position: relative; padding-left: 18px; font-size: 15px; line-height: 1.4; margin-bottom: 2px; }
 .rules li::before { content: ''; position: absolute; left: 0; top: 0.42em; width: 8px; height: 8px; background: var(--ink); }
 
+/* ---- an example inside the rules: one closed door from both sides ---------- */
+
+.walls { display: flex; gap: 22px; margin: 8px 0 14px; }
+.walls figure { margin: 0; display: grid; gap: 6px; justify-items: center; }
+.walls figcaption { font: 400 22px / 1 var(--display); }
+/* What the digits under the pictures stand for. */
+.wall-key { display: flex; flex-wrap: wrap; gap: 4px 20px; margin: -2px 0 14px; font-size: 15px; }
+.wall-key i { display: inline-block; width: 18px; height: 18px; margin-right: 7px; vertical-align: -4px; }
+/* Three small ones in a row, each with its digits. */
+.walls.is-small { gap: clamp(10px, 3vw, 18px); margin: 4px 0 12px; }
+.walls.is-small .wall { --cell: 18px; padding: 8px; }
+.walls.is-small figcaption { font-size: 19px; white-space: nowrap; }
+/* A piece of sky, so the blocks read the way they do in the scene. */
+.wall {
+  --cell: clamp(26px, 8vw, 36px);
+  display: grid;
+  grid-template-columns: repeat(3, var(--cell));
+  padding: 12px;
+  border: var(--px) solid var(--quartz-rim);
+  background: linear-gradient(180deg, var(--sky-top), var(--sky-low));
+}
+.wall i { width: var(--cell); height: var(--cell); }
+.wall .block,
+.wall-key .block { background: var(--quartz); border: var(--px) solid var(--quartz-rim); }
+/* One block back: darker, with the shade the front layer casts on it. */
+.wall .deep,
+.wall-key .deep {
+  background: linear-gradient(180deg, #8f897c 0 22%, var(--quartz-side) 22%);
+  border: var(--px) solid #a39c8c;
+}
+.wall .none,
+.no-block {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='5' fill='none' stroke='%23b8483e' stroke-width='2'/%3E%3Cpath d='M4.6 11.4 11.4 4.6' stroke='%23b8483e' stroke-width='2'/%3E%3C/svg%3E") center / 72% no-repeat;
+}
+.no-block { display: inline-block; width: 18px; height: 18px; vertical-align: -4px; background-size: 100%; }
+
 /* ---- progress map ------------------------------------------------------- */
 
 .legend-row {
@@ -289,6 +396,8 @@ h3 { margin: 0 0 4px; font: 400 26px / 1 var(--display); }
   }
 
   .actions { padding-bottom: calc(14px + env(safe-area-inset-bottom)); }
+  /* With the sheet up there is little room left: the door gets all of it. */
+  .app.is-open .pager { display: none; }
   .block-btn { flex: 1 1 0; justify-content: center; max-width: 150px; padding: 0 8px; }
 
   .panel { width: auto; height: 0; transition: height var(--slide); }
@@ -306,5 +415,5 @@ h3 { margin: 0 0 4px; font: 400 26px / 1 var(--display); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .panel, .block-btn { transition: none; }
+  .panel, .block-btn, .pager-btn { transition: none; }
 }

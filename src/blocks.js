@@ -182,6 +182,15 @@ const composterStyle = (level) => ({
   },
 });
 
+// The mouth sits on the face the dropper points at: north (-z) or, turned, up.
+const mouth = (ctx) => { dot(ctx, '#5a5f66', 3, 3, 10, 10); dot(ctx, '#2c2f34', 5, 6, 6, 4); dot(ctx, '#2c2f34', 6, 5, 4, 6); };
+const dropperStyle = (vertical) => ({
+  key: `dropper${vertical}`, fill: '#8f949b', edge: '#6f747b',
+  deco: vertical ? { py: mouth } : { nz: mouth },
+});
+
+const obsidianStyle = { key: 'obsidian', fill: '#2a2238', edge: '#1b1626', deco: { all: flecks('#463a5e') } };
+
 const redstoneBlockStyle = {
   key: 'redstoneBlock', fill: '#c92b1d', edge: '#9a1d12',
   deco: { all: flecks('#e85a48') },
@@ -190,11 +199,43 @@ const redstoneBlockStyle = {
 
 const fenceStyle = { key: 'fence', fill: '#a9743f', edge: '#7d522d' };
 
+const hopperStyle = {
+  key: 'hopper', fill: '#4d5157', edge: '#3a3d42',
+  deco: { py: (ctx, w, h) => dot(ctx, '#26282c', 2, 2, w - 4, h - 4) },
+};
+const bellStyle = { key: 'bell', fill: '#e3b341', edge: '#b8862b' };
+const tntStyle = {
+  key: 'tnt', fill: '#d8402f', edge: '#a82c1f',
+  deco: {
+    side: (ctx, w) => { dot(ctx, '#f1e6dc', 0, 5, w, 6); dot(ctx, '#1c2536', 3, 7, 3, 2); dot(ctx, '#1c2536', 7, 7, 2, 2); dot(ctx, '#1c2536', 10, 7, 3, 2); },
+    py: (ctx) => { dot(ctx, '#3a3d42', 4, 4, 2, 2); dot(ctx, '#3a3d42', 10, 4, 2, 2); dot(ctx, '#3a3d42', 7, 10, 2, 2); },
+  },
+};
+const leavesStyle = { key: 'leaves', fill: '#5d9a3f', edge: '#427a2b', deco: { all: flecks('#f0a8d0') } };
+const lampStyle = (lit) => ({
+  key: `lamp${lit}`, fill: lit ? '#ffd27a' : '#8c5a2e', edge: lit ? '#d99a3a' : '#6a4220',
+  deco: { all: (ctx, w, h) => { dot(ctx, lit ? '#fff3c4' : '#a56c3a', 4, 4, w - 8, h - 8); } },
+  glow: lit ? { all: (ctx, w, h) => dot(ctx, '#c98a2a', 1, 1, w - 2, h - 2) } : undefined,
+});
+const railStyle = (gold) => ({ key: `rail${gold}`, fill: gold ? '#e3b341' : '#9a9ea5', edge: gold ? '#b8862b' : '#787d85' });
+const railCoreStyle = (lit) => ({
+  key: `railCore${lit}`, fill: lit ? '#ff5038' : '#7a2c26', edge: lit ? '#d93a25' : '#541812',
+  glow: lit ? { all: (ctx, w, h) => dot(ctx, '#ff5038', 0, 0, w, h) } : undefined,
+});
+const targetStyle = {
+  key: 'target', fill: '#f1e6dc', edge: '#d9c9ba',
+  deco: { all: (ctx) => { dot(ctx, '#d15b4f', 3, 3, 10, 10); dot(ctx, '#f1e6dc', 5, 5, 6, 6); dot(ctx, '#d15b4f', 7, 7, 2, 2); } },
+};
+const rodStyle = (powered) => ({
+  key: `lightningRod${powered}`, fill: powered ? '#ffd9b8' : '#d08158', edge: powered ? '#e8a77c' : '#a85f3e',
+  glow: powered ? { all: (ctx, w, h) => dot(ctx, '#8a5a3a', 0, 0, w, h) } : undefined,
+});
+
 const FALLBACK = {
   slime_block: ['#84d862', '#60b043'], honey_block: ['#f3a92d', '#c98314'],
   target: ['#f1e6dc', '#d15b4f'], redstone_lamp: ['#8c5a2e', '#6a4220'], hopper: ['#4d5157', '#3a3d42'],
   dropper: ['#8f9399', '#6f747b'], dispenser: ['#8f9399', '#6f747b'], barrel: ['#9c6b49', '#754a30'],
-  comparator: ['#c5c8cc', '#9da1a7'], obsidian: ['#2a2238', '#1b1626'],
+  comparator: ['#c5c8cc', '#9da1a7'], obsidian: ['#2a2238', '#1b1626'], crying_obsidian: ['#2a2238', '#7a3fd1'],
 };
 const warned = new Set();
 function fallbackStyle(name) {
@@ -264,9 +305,82 @@ function fence(props) {
   return g;
 }
 
+// Built with the spout pointing north (-z); "down" keeps it under the bowl.
+function hopper(props) {
+  const down = props.facing === 'down';
+  const g = group(
+    box(hopperStyle, 16, 6, 16, 0, 5, 0),
+    box(hopperStyle, 8, 6, 8, 0, -1, 0),
+    down ? box(hopperStyle, 4, 4, 4, 0, -6, 0) : box(hopperStyle, 4, 4, 4, 0, -2, -6),
+  );
+  g.rotation.y = YAW[props.facing] ?? 0;
+  return g;
+}
+
+// A wall bell hangs on a bar that runs towards the wall it faces.
+function bell(props) {
+  const g = group(box(bellStyle, 6, 6, 6, 0, -1, 0), box(bellStyle, 8, 2, 8, 0, -5, 0));
+  const at = props.attachment ?? 'floor';
+  if (at === 'ceiling') g.add(box(S.stoneDark, 2, 5, 2, 0, 5.5, 0));
+  else if (at === 'double_wall') g.add(box(S.stoneDark, 2, 2, 16, 0, 3, 0));
+  else if (at === 'single_wall') g.add(box(S.stoneDark, 2, 2, 13, 0, 3, -1.5));
+  else g.add(box(S.stoneDark, 16, 2, 2, 0, 3, 0), box(S.stoneDark, 2, 12, 2, -7, -2, 0), box(S.stoneDark, 2, 12, 2, 7, -2, 0));
+  g.rotation.y = YAW[props.facing] ?? 0;
+  return g;
+}
+
+// Half a casing block; "double" is a full one.
+function slab(props) {
+  if (props.type === 'double') return box(S.casing, 16, 16, 16);
+  return box(S.casing, 16, 8, 16, 0, props.type === 'top' ? 4 : -4, 0);
+}
+
+function lightningRod(props) {
+  const style = rodStyle(props.powered === 'true');
+  return turn(group(box(style, 2, 12, 2, 0, -2, 0), box(style, 4, 4, 4, 0, 6, 0)), props.facing ?? 'up');
+}
+
+// Flat track: two rails on wooden ties, running north-south unless the shape
+// says otherwise. Slopes are drawn flat. kind: 'rail', 'powered_rail', 'detector_rail'.
+function rail(kind, props) {
+  const lit = props.powered === 'true';
+  const metal = railStyle(kind === 'powered_rail');
+  const g = group(box(metal, 2, 1, 16, -5, -7, 0), box(metal, 2, 1, 16, 5, -7, 0));
+  for (const z of [-6, -2, 2, 6]) g.add(box(S.handle, 12, 1, 2, 0, -7.5, z));
+  if (kind === 'powered_rail') g.add(box(railCoreStyle(lit), 2, 1, 16, 0, -7, 0));
+  if (kind === 'detector_rail') g.add(box(railCoreStyle(lit), 6, 1, 6, 0, -7, 0));
+  for (const c of g.children) c.castShadow = false;
+  if (/east|west/.test(props.shape ?? '') && !/north|south/.test(props.shape ?? '')) g.rotation.y = Math.PI / 2;
+  return g;
+}
+
 function furnace(props) {
   const g = group(box(furnaceStyle(props.lit === 'true'), 16, 16, 16));
   g.rotation.y = YAW[props.facing] ?? 0;
+  return g;
+}
+
+function dropper(props) {
+  const facing = props.facing ?? 'north';
+  if (facing === 'up' || facing === 'down') return turn(box(dropperStyle(true), 16, 16, 16), facing);
+  const g = group(box(dropperStyle(false), 16, 16, 16));
+  g.rotation.y = YAW[facing] ?? 0;
+  return g;
+}
+
+// A stick with a glowing head. On a wall it leans away from the block it hangs
+// on; built for facing north: mounted on the block to the south (+z).
+function torch(lit, wallFacing) {
+  const stick = group(box(S.handle, 2, 8, 2, 0, 4, 0), box(torchStyle(lit), 4, 4, 4, 0, 10, 0));
+  for (const c of stick.children) c.castShadow = false;
+  if (!wallFacing) {
+    stick.position.y = -8 * PX;
+    return group(stick);
+  }
+  stick.position.set(0, -5 * PX, 7 * PX);
+  stick.rotation.x = -Math.PI / 8;
+  const g = group(stick);
+  g.rotation.y = YAW[wallFacing] ?? 0;
   return g;
 }
 
@@ -327,8 +441,23 @@ export function makeBlock(state) {
     case 'comparator': return comparator(props);
     case 'fence': return fence(props);
     case 'furnace': return furnace(props);
+    case 'hopper': return hopper(props);
+    case 'bell': return bell(props);
+    case 'target': return box(targetStyle, 16, 16, 16);
+    case 'tnt': return box(tntStyle, 16, 16, 16);
+    case 'leaves': return box(leavesStyle, 16, 16, 16);
+    case 'redstone_lamp': return box(lampStyle(props.lit === 'true'), 16, 16, 16);
+    case 'rail':
+    case 'powered_rail':
+    case 'detector_rail': return rail(state.name, props);
+    case 'slab': return slab(props);
+    case 'lightning_rod': return lightningRod(props);
     case 'composter': return box(composterStyle(parseInt(props.level ?? '0', 10)), 16, 16, 16);
     case 'redstone_block': return box(redstoneBlockStyle, 16, 16, 16);
+    case 'redstone_torch': return torch(props.lit !== 'false');
+    case 'redstone_wall_torch': return torch(props.lit !== 'false', props.facing ?? 'north');
+    case 'dropper': return dropper(props);
+    case 'obsidian': return box(obsidianStyle, 16, 16, 16);
     default: return box(fallbackStyle(state.name), 16, 16, 16);
   }
 }

@@ -1,2 +1,10 @@
 node_modules
 dist
+.cache
+packs
+# Game looks are built from a local Minecraft install. Only what the site
+# shows by default is kept in the repository.
+public/mc/*
+!public/mc/doors
+!public/mc/softer
+!public/mc/font

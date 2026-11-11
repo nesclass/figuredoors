@@ -5,7 +5,7 @@
 // carried by pistons slide smoothly in between.
 
 import * as THREE from 'three';
-import { makeBlock, setHeadExtension } from './blocks.js';
+import * as cartoon from './blocks.js';
 
 // Piston facing as stored in the recording.
 const DIRS = [[0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1], [-1, 0, 0], [1, 0, 0]];
@@ -13,8 +13,10 @@ const DIRS = [[0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1], [-1, 0, 0], [1, 0, 0
 const smooth = (p) => p * p * (3 - 2 * p);
 
 export class DoorPlayer {
-  constructor(door) {
+  // kit: {makeBlock, setHeadExtension}, the look the blocks are drawn in.
+  constructor(door, kit = cartoon) {
     this.door = door;
+    this.kit = kit;
     const [sx, sy, sz] = door.size;
     this.cellCount = sx * sy * sz;
     this.group = new THREE.Group();
@@ -41,7 +43,7 @@ export class DoorPlayer {
     if (this.states[i] === state) return;
     if (this.objects[i]) this.statics.remove(this.objects[i]);
     this.states[i] = state;
-    const obj = makeBlock(this.door.palette[state]);
+    const obj = this.kit.makeBlock(this.door.palette[state]);
     if (obj) {
       this.cellPosition(i, obj.position);
       this.statics.add(obj);
@@ -68,12 +70,14 @@ export class DoorPlayer {
       let obj;
       if (source && !extending) {
         // A retracting piston: its body stays put, only the head travels back.
-        const body = makeBlock({ name: state.name, props: { ...state.props, extended: 'true' } });
-        body.position.copy(at);
-        this.movers.add(body);
-        obj = makeBlock({ name: 'piston_head', props: { facing: state.props.facing, type: state.name === 'sticky_piston' ? 'sticky' : 'normal' } });
+        const body = this.kit.makeBlock({ name: state.name, props: { ...state.props, extended: 'true' } });
+        if (body) {
+          body.position.copy(at);
+          this.movers.add(body);
+        }
+        obj = this.kit.makeBlock({ name: 'piston_head', props: { facing: state.props.facing, type: state.name === 'sticky_piston' ? 'sticky' : 'normal' } });
       } else {
-        obj = makeBlock(state);
+        obj = this.kit.makeBlock(state);
       }
       if (!obj) continue;
       this.movers.add(obj);
@@ -105,7 +109,7 @@ export class DoorPlayer {
       m.obj.position.copy(m.at).addScaledVector(m.d, offset);
       // An extending head sits in its final cell and arrives; a retracting one
       // is anchored to the piston body and returns to it.
-      if (m.ownHead) setHeadExtension(m.obj, m.extending ? p : 1 - p);
+      if (m.ownHead) this.kit.setHeadExtension(m.obj, m.extending ? p : 1 - p);
     }
   }
 }

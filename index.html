@@ -10,7 +10,24 @@
   <body>
     <div class="app" id="app">
       <main class="stage">
-        <canvas id="scene" aria-label="A redstone figure door closing and opening"></canvas>
+        <div class="view">
+          <canvas id="scene" aria-label="A redstone figure door closing and opening"></canvas>
+        </div>
+        <div class="pager" id="pager">
+          <button class="pager-btn" type="button" data-go="-1" aria-label="Previous door" hidden>
+            <svg viewBox="0 0 4 7" aria-hidden="true"><path d="M3 0h1v1H3zM2 1h1v1H2zM1 2h1v1H1zM0 3h1v1H0zM1 4h1v1H1zM2 5h1v1H2zM3 6h1v1H3z" /></svg>
+          </button>
+          <div class="caption" id="caption" aria-live="polite">
+            <span class="figure">
+              <span class="glyph" aria-hidden="true"></span>
+              <span class="code"></span>
+            </span>
+            <span class="who"></span>
+          </div>
+          <button class="pager-btn" type="button" data-go="1" aria-label="Next door" hidden>
+            <svg viewBox="0 0 4 7" aria-hidden="true"><path d="M0 0h1v1H0zM1 1h1v1H1zM2 2h1v1H2zM3 3h1v1H3zM2 4h1v1H2zM1 5h1v1H1zM0 6h1v1H0z" /></svg>
+          </button>
+        </div>
       </main>
 
       <nav class="actions" aria-label="Sections">
@@ -36,9 +53,27 @@
 
           <section data-section="about" hidden>
             <h2>All 3×3 figure doors</h2>
-            <p>A 3×3 door has nine cells. Fill some, leave the rest empty, and you get one of 512 figures. This project is about building a piston door for each of them.</p>
-            <p>A door closes into its figure: <span class="glyph is-inline" data-figure="101111101" aria-hidden="true"></span> <code>101 111 101</code> is an H, for example.</p>
-            <p>Finished doors move to one showcase plot on <strong>synergyserver.net</strong>, all 512 side by side. Anyone on the server can join in: pick a free figure and build its door. Who builds what is tracked in <a class="inline" href="https://docs.google.com/spreadsheets/d/15XN6HaKvy0qAyVm7o3qg_iq_7kd_Ejh84goYQPRnSJE/edit?gid=0#gid=0" target="_blank" rel="noopener">the sheet</a> and at the reference plot: <code>/warp tp figure</code></p>
+            <p>We're building every 3×3 figure door there is, all 512 of them.</p>
+            <p>A figure door doesn't close flat. Some of its 9 blocks stop one block behind the others, and the closed door shows a figure.</p>
+            <div class="walls is-small" aria-hidden="true">
+              <figure>
+                <span class="wall" data-figure="101111101" data-side="front"></span>
+                <figcaption>101 111 101</figcaption>
+              </figure>
+              <figure>
+                <span class="wall" data-figure="010111010" data-side="front"></span>
+                <figcaption>010 111 010</figcaption>
+              </figure>
+              <figure>
+                <span class="wall" data-figure="111101111" data-side="front"></span>
+                <figcaption>111 101 111</figcaption>
+              </figure>
+            </div>
+            <p class="wall-key">
+              <span><i class="block"></i>1 in front</span>
+              <span><i class="deep"></i>0 one block behind</span>
+            </p>
+            <p>Each door is built on <strong>synergyserver.net</strong> and then moves to the showcase plot, next to the others. Anyone from the server is welcome to build one. Free figures are on the <button class="inline" type="button" data-open="progress">progress map</button>, or in game: <code>/warp tp figure</code></p>
           </section>
 
           <section data-section="join" aria-label="Build one yourself" hidden>
@@ -49,35 +84,54 @@
 
             <div data-page-body="steps">
               <ol class="steps">
-                <li>Grab a free figure from the <button class="inline" type="button" data-open="progress">progress map</button>, or see them all in game: <code>/warp tp figure</code></li>
-                <li>Build the door on <strong>synergyserver.net</strong>. Rules are in the next tab.</li>
-                <li>Pick an item for the wireless input that isn't in <a class="inline" href="https://docs.google.com/spreadsheets/d/15XN6HaKvy0qAyVm7o3qg_iq_7kd_Ejh84goYQPRnSJE/edit?gid=0#gid=0" target="_blank" rel="noopener">the sheet</a> yet.</li>
+                <li>Pick a figure nobody has taken yet, on the <button class="inline" type="button" data-open="progress">progress map</button> or in game: <code>/warp tp figure</code></li>
+                <li>Build the door on <strong>synergyserver.net</strong>. The <button class="inline" type="button" data-page="rules">rules</button> are short, have a look first.</li>
+                <li>Choose an item for the wireless input. The ones already taken are listed in <a class="inline" href="https://docs.google.com/spreadsheets/d/15XN6HaKvy0qAyVm7o3qg_iq_7kd_Ejh84goYQPRnSJE/edit?gid=0#gid=0" target="_blank" rel="noopener">the sheet</a>.</li>
                 <li>Send the coords and the item on Discord or in game: <code>/mail send nesclass</code></li>
               </ol>
+              <p>That's it. Your door goes on the map and later moves to the showcase plot.</p>
             </div>
 
             <div data-page-body="rules" hidden>
               <h3>Must</h3>
               <ul class="rules">
-                <li>13×13×2 max, opening in the centre.</li>
-                <li>Seamless and mobless.</li>
-                <li>Non-locational, non-directional.</li>
-                <li>Quartz block for the figure.</li>
-                <li>A lever or a button for the input.</li>
-                <li>Doesn't take too long to open or close.</li>
+                <li>The door fits in a 13×13×2 box, with the 3×3 right in the middle of it.</li>
+                <li>It's seamless from the front. <button class="inline" type="button" data-page="backwall" data-tab="rules">The back wall</button> can have seams and gaps.</li>
+                <li>It's mobless, non-locational and non-directional.</li>
+                <li>The figure is made of quartz blocks.</li>
+                <li>The input is a lever or a button.</li>
+                <li>It doesn't take too long to open or close.</li>
               </ul>
               <h3>Even better</h3>
               <ul class="rules">
-                <li>Fits in 11×11×2.</li>
-                <li>NTTless.</li>
-                <li>Input on its own block, on the front.</li>
+                <li>It's layout-sized. Bigger is fine when you're going for something funny or a challenge: 0-tick, obsless, beta, cracked, complex animation and so on.</li>
+                <li>It's NTTless.</li>
+                <li>The input has its own block, on the front.</li>
               </ul>
               <h3>Don't repeat yourself</h3>
               <ul class="rules">
-                <li>16 doors per person at most.</li>
-                <li>Try to build every door differently. Up to 8 of yours can share a layout.</li>
+                <li>You can build up to 16 doors.</li>
+                <li>Try to make each one different. Up to 8 of yours can share a layout.</li>
                 <li>A figure and its inverse need different wiring. Reusing it is cheating.</li>
               </ul>
+            </div>
+
+            <div data-page-body="backwall" hidden>
+              <h3>The back wall</h3>
+              <div class="walls" aria-hidden="true">
+                <figure>
+                  <span class="wall" data-figure="101010101" data-side="front"></span>
+                  <figcaption>Front</figcaption>
+                </figure>
+                <figure>
+                  <span class="wall" data-figure="101010101" data-side="back"></span>
+                  <figcaption>Back</figcaption>
+                </figure>
+              </div>
+              <p><code>101 010 101</code> closed, from both sides.</p>
+              <p>The front has to be seamless.</p>
+              <p>The back doesn't. You don't need a block where the <span class="no-block" aria-hidden="true"></span> mark is.</p>
+              <p><button class="inline" type="button" data-page="rules">Back to the rules</button></p>
             </div>
           </section>
 

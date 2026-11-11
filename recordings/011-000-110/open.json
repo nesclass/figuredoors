@@ -1,0 +1,1982 @@
+{
+  "format": 1,
+  "frames": [
+    {
+      "changes": [
+        0,
+        0,
+        7,
+        0,
+        14,
+        0,
+        1,
+        0,
+        8,
+        0,
+        15,
+        0,
+        2,
+        1,
+        9,
+        2,
+        16,
+        0,
+        3,
+        3,
+        10,
+        2,
+        17,
+        0,
+        4,
+        0,
+        11,
+        1,
+        18,
+        0,
+        5,
+        4,
+        12,
+        3,
+        19,
+        0,
+        6,
+        1,
+        13,
+        5,
+        20,
+        0,
+        21,
+        0,
+        28,
+        0,
+        35,
+        0,
+        22,
+        0,
+        29,
+        0,
+        36,
+        0,
+        23,
+        6,
+        30,
+        0,
+        37,
+        0,
+        24,
+        6,
+        31,
+        0,
+        38,
+        0,
+        25,
+        6,
+        32,
+        6,
+        39,
+        0,
+        26,
+        0,
+        33,
+        0,
+        40,
+        0,
+        27,
+        7,
+        34,
+        1,
+        41,
+        0,
+        42,
+        0,
+        49,
+        0,
+        56,
+        0,
+        43,
+        6,
+        50,
+        6,
+        57,
+        0,
+        44,
+        0,
+        51,
+        8,
+        58,
+        0,
+        45,
+        0,
+        52,
+        8,
+        59,
+        0,
+        46,
+        8,
+        53,
+        0,
+        60,
+        0,
+        47,
+        0,
+        54,
+        6,
+        61,
+        0,
+        48,
+        9,
+        55,
+        10,
+        62,
+        0,
+        63,
+        11,
+        70,
+        0,
+        77,
+        0,
+        64,
+        0,
+        71,
+        6,
+        78,
+        0,
+        65,
+        8,
+        72,
+        0,
+        79,
+        0,
+        66,
+        8,
+        73,
+        0,
+        80,
+        0,
+        67,
+        8,
+        74,
+        0,
+        81,
+        0,
+        68,
+        0,
+        75,
+        6,
+        82,
+        0,
+        69,
+        9,
+        76,
+        1,
+        83,
+        0,
+        84,
+        11,
+        91,
+        1,
+        98,
+        0,
+        85,
+        0,
+        92,
+        6,
+        99,
+        0,
+        86,
+        8,
+        93,
+        0,
+        100,
+        0,
+        87,
+        0,
+        94,
+        8,
+        101,
+        0,
+        88,
+        0,
+        95,
+        8,
+        102,
+        0,
+        89,
+        6,
+        96,
+        6,
+        103,
+        0,
+        90,
+        0,
+        97,
+        12,
+        104,
+        0,
+        105,
+        2,
+        112,
+        13,
+        119,
+        0,
+        106,
+        14,
+        113,
+        3,
+        120,
+        0,
+        107,
+        6,
+        114,
+        6,
+        121,
+        0,
+        108,
+        15,
+        115,
+        16,
+        122,
+        0,
+        109,
+        8,
+        116,
+        16,
+        123,
+        0,
+        110,
+        17,
+        117,
+        0,
+        124,
+        0,
+        111,
+        18,
+        118,
+        17,
+        125,
+        0,
+        126,
+        0,
+        133,
+        5,
+        140,
+        0,
+        127,
+        1,
+        134,
+        16,
+        141,
+        0,
+        128,
+        19,
+        135,
+        20,
+        142,
+        0,
+        129,
+        16,
+        136,
+        21,
+        143,
+        0,
+        130,
+        3,
+        137,
+        21,
+        144,
+        0,
+        131,
+        22,
+        138,
+        23,
+        145,
+        0,
+        132,
+        24,
+        139,
+        22,
+        146,
+        0,
+        147,
+        18,
+        154,
+        25,
+        161,
+        0,
+        148,
+        0,
+        155,
+        21,
+        162,
+        0,
+        149,
+        1,
+        156,
+        26,
+        163,
+        0,
+        150,
+        21,
+        157,
+        1,
+        164,
+        27,
+        151,
+        26,
+        158,
+        28,
+        165,
+        0,
+        152,
+        29,
+        159,
+        30,
+        166,
+        0,
+        153,
+        31,
+        160,
+        32,
+        167,
+        0,
+        168,
+        0,
+        175,
+        0,
+        182,
+        0,
+        169,
+        0,
+        176,
+        0,
+        183,
+        0,
+        170,
+        0,
+        177,
+        0,
+        184,
+        0,
+        171,
+        0,
+        178,
+        0,
+        185,
+        0,
+        172,
+        0,
+        179,
+        0,
+        186,
+        0,
+        173,
+        0,
+        180,
+        0,
+        187,
+        0,
+        174,
+        0,
+        181,
+        0,
+        188,
+        0
+      ],
+      "t": 0
+    },
+    {
+      "changes": [
+        94,
+        0,
+        95,
+        0,
+        115,
+        33,
+        116,
+        33,
+        110,
+        0,
+        118,
+        0,
+        136,
+        34,
+        137,
+        34,
+        131,
+        35,
+        138,
+        5,
+        139,
+        35,
+        164,
+        36,
+        158,
+        13,
+        159,
+        37
+      ],
+      "t": 26
+    },
+    {
+      "changes": [
+        112,
+        19,
+        113,
+        0,
+        115,
+        38,
+        116,
+        38,
+        134,
+        39,
+        136,
+        40,
+        137,
+        40,
+        131,
+        41,
+        139,
+        41,
+        155,
+        34,
+        156,
+        42
+      ],
+      "t": 27
+    },
+    {
+      "changes": [
+        4,
+        43,
+        5,
+        44,
+        13,
+        23,
+        27,
+        45,
+        47,
+        46,
+        48,
+        47,
+        55,
+        48,
+        68,
+        46,
+        69,
+        47,
+        87,
+        49,
+        97,
+        50,
+        108,
+        21,
+        115,
+        8,
+        116,
+        8,
+        111,
+        51,
+        134,
+        52,
+        136,
+        15,
+        130,
+        53,
+        137,
+        15,
+        131,
+        54,
+        139,
+        54,
+        155,
+        40
+      ],
+      "t": 28
+    },
+    {
+      "changes": [
+        4,
+        55,
+        47,
+        56,
+        68,
+        56,
+        87,
+        57,
+        134,
+        3,
+        155,
+        15
+      ],
+      "t": 29
+    },
+    {
+      "changes": [
+        9,
+        58,
+        3,
+        53,
+        10,
+        58,
+        4,
+        0,
+        5,
+        59,
+        12,
+        53,
+        13,
+        5,
+        30,
+        60,
+        31,
+        60,
+        27,
+        7,
+        46,
+        0,
+        47,
+        61,
+        48,
+        62,
+        55,
+        10,
+        66,
+        0,
+        67,
+        0,
+        68,
+        61,
+        69,
+        62,
+        87,
+        33,
+        97,
+        12,
+        108,
+        34,
+        111,
+        18,
+        130,
+        3,
+        132,
+        63,
+        153,
+        64
+      ],
+      "t": 30
+    },
+    {
+      "changes": [
+        5,
+        65,
+        30,
+        66,
+        31,
+        66,
+        47,
+        67,
+        48,
+        68,
+        63,
+        69,
+        64,
+        70,
+        68,
+        67,
+        69,
+        68,
+        84,
+        69,
+        85,
+        70,
+        87,
+        38,
+        105,
+        58,
+        112,
+        71,
+        108,
+        40,
+        126,
+        60,
+        133,
+        23,
+        134,
+        53
+      ],
+      "t": 31
+    },
+    {
+      "changes": [
+        9,
+        72,
+        3,
+        3,
+        10,
+        72,
+        5,
+        4,
+        12,
+        3,
+        30,
+        73,
+        31,
+        73,
+        51,
+        0,
+        52,
+        0,
+        47,
+        8,
+        48,
+        9,
+        64,
+        74,
+        68,
+        8,
+        69,
+        9,
+        85,
+        74,
+        87,
+        8,
+        108,
+        15,
+        126,
+        66,
+        132,
+        24,
+        152,
+        75,
+        153,
+        76
+      ],
+      "t": 32
+    },
+    {
+      "changes": [
+        9,
+        77,
+        10,
+        77,
+        30,
+        78,
+        31,
+        78,
+        63,
+        79,
+        64,
+        80,
+        65,
+        0,
+        84,
+        79,
+        85,
+        80,
+        86,
+        0,
+        105,
+        72,
+        112,
+        19,
+        126,
+        81,
+        133,
+        5,
+        134,
+        3,
+        147,
+        0
+      ],
+      "t": 33
+    },
+    {
+      "changes": [
+        9,
+        2,
+        10,
+        2,
+        30,
+        8,
+        31,
+        8,
+        63,
+        82,
+        64,
+        83,
+        84,
+        82,
+        85,
+        83,
+        105,
+        77,
+        108,
+        0,
+        126,
+        84,
+        129,
+        85,
+        150,
+        34,
+        151,
+        42
+      ],
+      "t": 34
+    },
+    {
+      "changes": [
+        63,
+        11,
+        64,
+        8,
+        84,
+        11,
+        85,
+        8,
+        105,
+        2,
+        126,
+        18,
+        129,
+        86,
+        150,
+        40
+      ],
+      "t": 35
+    },
+    {
+      "changes": [
+        129,
+        15,
+        150,
+        15
+      ],
+      "t": 36
+    },
+    {
+      "changes": [
+        87,
+        0,
+        105,
+        72,
+        106,
+        87,
+        108,
+        33,
+        126,
+        0,
+        129,
+        34,
+        147,
+        18
+      ],
+      "t": 37
+    },
+    {
+      "changes": [
+        105,
+        77,
+        106,
+        88,
+        108,
+        38,
+        129,
+        40
+      ],
+      "t": 38
+    },
+    {
+      "changes": [
+        105,
+        2,
+        106,
+        14,
+        108,
+        8,
+        129,
+        15
+      ],
+      "t": 39
+    }
+  ],
+  "name": "open",
+  "origin": [
+    -31,
+    -24,
+    -86
+  ],
+  "palette": [
+    {
+      "name": "air"
+    },
+    {
+      "name": "yellow_concrete"
+    },
+    {
+      "name": "sticky_piston",
+      "props": {
+        "extended": "false",
+        "facing": "up"
+      }
+    },
+    {
+      "name": "observer",
+      "props": {
+        "facing": "east",
+        "powered": "false"
+      }
+    },
+    {
+      "name": "piston",
+      "props": {
+        "extended": "false",
+        "facing": "west"
+      }
+    },
+    {
+      "name": "note_block",
+      "props": {
+        "instrument": "harp",
+        "note": "0",
+        "powered": "false"
+      }
+    },
+    {
+      "name": "white_stained_glass"
+    },
+    {
+      "name": "redstone_wire",
+      "props": {
+        "east": "none",
+        "north": "side",
+        "power": "0",
+        "south": "up",
+        "west": "none"
+      }
+    },
+    {
+      "name": "quartz_block"
+    },
+    {
+      "name": "sticky_piston",
+      "props": {
+        "extended": "false",
+        "facing": "west"
+      }
+    },
+    {
+      "name": "redstone_wire",
+      "props": {
+        "east": "none",
+        "north": "side",
+        "power": "0",
+        "south": "side",
+        "west": "none"
+      }
+    },
+    {
+      "name": "sticky_piston",
+      "props": {
+        "extended": "false",
+        "facing": "east"
+      }
+    },
+    {
+      "name": "observer",
+      "props": {
+        "facing": "up",
+        "powered": "false"
+      }
+    },
+    {
+      "name": "redstone_wire",
+      "props": {
+        "east": "side",
+        "north": "none",
+        "power": "0",
+        "south": "none",
+        "west": "side"
+      }
+    },
+    {
+      "name": "piston",
+      "props": {
+        "extended": "false",
+        "facing": "south"
+      }
+    },
+    {
+      "name": "sticky_piston",
+      "props": {
+        "extended": "false",
+        "facing": "down"
+      }
+    },
+    {
+      "name": "piston_head",
+      "props": {
+        "facing": "down",
+        "short": "false",
+        "type": "sticky"
+      }
+    },
+    {
+      "name": "piston_head",
+      "props": {
+        "facing": "down",
+        "short": "false",
+        "type": "normal"
+      }
+    },
+    {
+      "name": "observer",
+      "props": {
+        "facing": "west",
+        "powered": "false"
+      }
+    },
+    {
+      "name": "redstone_wire",
+      "props": {
+        "east": "side",
+        "north": "side",
+        "power": "0",
+        "south": "side",
+        "west": "side"
+      }
+    },
+    {
+      "name": "smooth_stone_slab",
+      "props": {
+        "type": "top",
+        "waterlogged": "false"
+      }
+    },
+    {
+      "name": "sticky_piston",
+      "props": {
+        "extended": "true",
+        "facing": "down"
+      }
+    },
+    {
+      "name": "piston",
+      "props": {
+        "extended": "true",
+        "facing": "down"
+      }
+    },
+    {
+      "name": "note_block",
+      "props": {
+        "instrument": "harp",
+        "note": "0",
+        "powered": "true"
+      }
+    },
+    {
+      "name": "observer",
+      "props": {
+        "facing": "down",
+        "powered": "false"
+      }
+    },
+    {
+      "name": "yellow_stained_glass"
+    },
+    {
+      "name": "repeater",
+      "props": {
+        "delay": "1",
+        "facing": "east",
+        "locked": "false",
+        "powered": "true"
+      }
+    },
+    {
+      "name": "lever",
+      "props": {
+        "face": "wall",
+        "facing": "south",
+        "powered": "true"
+      }
+    },
+    {
+      "name": "redstone_wire",
+      "props": {
+        "east": "side",
+        "north": "none",
+        "power": "15",
+        "south": "none",
+        "west": "side"
+      }
+    },
+    {
+      "name": "comparator",
+      "props": {
+        "facing": "east",
+        "mode": "compare",
+        "powered": "true"
+      }
+    },
+    {
+      "name": "redstone_wire",
+      "props": {
+        "east": "side",
+        "north": "side",
+        "power": "14",
+        "south": "none",
+        "west": "side"
+      }
+    },
+    {
+      "name": "waxed_copper_bulb",
+      "props": {
+        "lit": "true",
+        "powered": "false"
+      }
+    },
+    {
+      "name": "waxed_lightning_rod",
+      "props": {
+        "facing": "south",
+        "powered": "false",
+        "waterlogged": "false"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:quartz_block"
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 0,
+        "progress": 0,
+        "source": 0
+      },
+      "props": {
+        "facing": "down",
+        "type": "normal"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:sticky_piston",
+          "Properties": {
+            "extended": "false",
+            "facing": "down"
+          }
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 0,
+        "progress": 0,
+        "source": 1
+      },
+      "props": {
+        "facing": "down",
+        "type": "sticky"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:piston",
+          "Properties": {
+            "extended": "false",
+            "facing": "down"
+          }
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 0,
+        "progress": 0,
+        "source": 1
+      },
+      "props": {
+        "facing": "down",
+        "type": "normal"
+      }
+    },
+    {
+      "name": "lever",
+      "props": {
+        "face": "wall",
+        "facing": "south",
+        "powered": "false"
+      }
+    },
+    {
+      "name": "redstone_wire",
+      "props": {
+        "east": "side",
+        "north": "side",
+        "power": "0",
+        "south": "none",
+        "west": "side"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:quartz_block"
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 0,
+        "progress": 0.5,
+        "source": 0
+      },
+      "props": {
+        "facing": "down",
+        "type": "normal"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:observer",
+          "Properties": {
+            "facing": "east",
+            "powered": "false"
+          }
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 0,
+        "progress": 0,
+        "source": 0
+      },
+      "props": {
+        "facing": "down",
+        "type": "normal"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:sticky_piston",
+          "Properties": {
+            "extended": "false",
+            "facing": "down"
+          }
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 0,
+        "progress": 0.5,
+        "source": 1
+      },
+      "props": {
+        "facing": "down",
+        "type": "sticky"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:piston",
+          "Properties": {
+            "extended": "false",
+            "facing": "down"
+          }
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 0,
+        "progress": 0.5,
+        "source": 1
+      },
+      "props": {
+        "facing": "down",
+        "type": "normal"
+      }
+    },
+    {
+      "name": "repeater",
+      "props": {
+        "delay": "1",
+        "facing": "east",
+        "locked": "false",
+        "powered": "false"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:piston_head",
+          "Properties": {
+            "facing": "west",
+            "short": "false",
+            "type": "normal"
+          }
+        },
+        "components": {},
+        "extending": 1,
+        "facing": 4,
+        "progress": 0,
+        "source": 1
+      },
+      "props": {
+        "facing": "west",
+        "type": "normal"
+      }
+    },
+    {
+      "name": "piston",
+      "props": {
+        "extended": "true",
+        "facing": "west"
+      }
+    },
+    {
+      "name": "redstone_wire",
+      "props": {
+        "east": "none",
+        "north": "side",
+        "power": "14",
+        "south": "up",
+        "west": "none"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:piston_head",
+          "Properties": {
+            "facing": "west",
+            "short": "false",
+            "type": "sticky"
+          }
+        },
+        "components": {},
+        "extending": 1,
+        "facing": 4,
+        "progress": 0,
+        "source": 1
+      },
+      "props": {
+        "facing": "west",
+        "type": "sticky"
+      }
+    },
+    {
+      "name": "sticky_piston",
+      "props": {
+        "extended": "true",
+        "facing": "west"
+      }
+    },
+    {
+      "name": "redstone_wire",
+      "props": {
+        "east": "none",
+        "north": "side",
+        "power": "15",
+        "south": "side",
+        "west": "none"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:piston_head",
+          "Properties": {
+            "facing": "down",
+            "short": "false",
+            "type": "sticky"
+          }
+        },
+        "components": {},
+        "extending": 1,
+        "facing": 0,
+        "progress": 0,
+        "source": 1
+      },
+      "props": {
+        "facing": "down",
+        "type": "sticky"
+      }
+    },
+    {
+      "name": "observer",
+      "props": {
+        "facing": "up",
+        "powered": "true"
+      }
+    },
+    {
+      "name": "observer",
+      "props": {
+        "facing": "west",
+        "powered": "true"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:observer",
+          "Properties": {
+            "facing": "east",
+            "powered": "false"
+          }
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 0,
+        "progress": 0.5,
+        "source": 0
+      },
+      "props": {
+        "facing": "down",
+        "type": "normal"
+      }
+    },
+    {
+      "name": "observer",
+      "props": {
+        "facing": "east",
+        "powered": "true"
+      }
+    },
+    {
+      "name": "piston",
+      "props": {
+        "extended": "false",
+        "facing": "down"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:piston_head",
+          "Properties": {
+            "facing": "west",
+            "short": "false",
+            "type": "normal"
+          }
+        },
+        "components": {},
+        "extending": 1,
+        "facing": 4,
+        "progress": 0.5,
+        "source": 1
+      },
+      "props": {
+        "facing": "west",
+        "type": "normal"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:piston_head",
+          "Properties": {
+            "facing": "west",
+            "short": "false",
+            "type": "sticky"
+          }
+        },
+        "components": {},
+        "extending": 1,
+        "facing": 4,
+        "progress": 0.5,
+        "source": 1
+      },
+      "props": {
+        "facing": "west",
+        "type": "sticky"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:piston_head",
+          "Properties": {
+            "facing": "down",
+            "short": "false",
+            "type": "sticky"
+          }
+        },
+        "components": {},
+        "extending": 1,
+        "facing": 0,
+        "progress": 0.5,
+        "source": 1
+      },
+      "props": {
+        "facing": "down",
+        "type": "sticky"
+      }
+    },
+    {
+      "name": "sticky_piston",
+      "props": {
+        "extended": "true",
+        "facing": "up"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:piston",
+          "Properties": {
+            "extended": "false",
+            "facing": "west"
+          }
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 4,
+        "progress": 0,
+        "source": 1
+      },
+      "props": {
+        "facing": "west",
+        "type": "normal"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:piston_head",
+          "Properties": {
+            "facing": "up",
+            "short": "false",
+            "type": "sticky"
+          }
+        },
+        "components": {},
+        "extending": 1,
+        "facing": 1,
+        "progress": 0,
+        "source": 1
+      },
+      "props": {
+        "facing": "up",
+        "type": "sticky"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:quartz_block"
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 4,
+        "progress": 0,
+        "source": 0
+      },
+      "props": {
+        "facing": "west",
+        "type": "normal"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:sticky_piston",
+          "Properties": {
+            "extended": "false",
+            "facing": "west"
+          }
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 4,
+        "progress": 0,
+        "source": 1
+      },
+      "props": {
+        "facing": "west",
+        "type": "sticky"
+      }
+    },
+    {
+      "name": "observer",
+      "props": {
+        "facing": "down",
+        "powered": "true"
+      }
+    },
+    {
+      "name": "waxed_copper_bulb",
+      "props": {
+        "lit": "false",
+        "powered": "true"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:piston",
+          "Properties": {
+            "extended": "false",
+            "facing": "west"
+          }
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 4,
+        "progress": 0.5,
+        "source": 1
+      },
+      "props": {
+        "facing": "west",
+        "type": "normal"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:piston_head",
+          "Properties": {
+            "facing": "up",
+            "short": "false",
+            "type": "sticky"
+          }
+        },
+        "components": {},
+        "extending": 1,
+        "facing": 1,
+        "progress": 0.5,
+        "source": 1
+      },
+      "props": {
+        "facing": "up",
+        "type": "sticky"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:quartz_block"
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 4,
+        "progress": 0.5,
+        "source": 0
+      },
+      "props": {
+        "facing": "west",
+        "type": "normal"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:sticky_piston",
+          "Properties": {
+            "extended": "false",
+            "facing": "west"
+          }
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 4,
+        "progress": 0.5,
+        "source": 1
+      },
+      "props": {
+        "facing": "west",
+        "type": "sticky"
+      }
+    },
+    {
+      "name": "sticky_piston",
+      "props": {
+        "extended": "true",
+        "facing": "east"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:piston_head",
+          "Properties": {
+            "facing": "east",
+            "short": "false",
+            "type": "sticky"
+          }
+        },
+        "components": {},
+        "extending": 1,
+        "facing": 5,
+        "progress": 0,
+        "source": 1
+      },
+      "props": {
+        "facing": "east",
+        "type": "sticky"
+      }
+    },
+    {
+      "name": "redstone_wire",
+      "props": {
+        "east": "side",
+        "north": "side",
+        "power": "15",
+        "south": "side",
+        "west": "side"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:sticky_piston",
+          "Properties": {
+            "extended": "false",
+            "facing": "up"
+          }
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 1,
+        "progress": 0,
+        "source": 1
+      },
+      "props": {
+        "facing": "up",
+        "type": "sticky"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:quartz_block"
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 1,
+        "progress": 0,
+        "source": 0
+      },
+      "props": {
+        "facing": "up",
+        "type": "normal"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:piston_head",
+          "Properties": {
+            "facing": "east",
+            "short": "false",
+            "type": "sticky"
+          }
+        },
+        "components": {},
+        "extending": 1,
+        "facing": 5,
+        "progress": 0.5,
+        "source": 1
+      },
+      "props": {
+        "facing": "east",
+        "type": "sticky"
+      }
+    },
+    {
+      "name": "comparator",
+      "props": {
+        "facing": "east",
+        "mode": "compare",
+        "powered": "false"
+      }
+    },
+    {
+      "name": "waxed_copper_bulb",
+      "props": {
+        "lit": "false",
+        "powered": "false"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:sticky_piston",
+          "Properties": {
+            "extended": "false",
+            "facing": "up"
+          }
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 1,
+        "progress": 0.5,
+        "source": 1
+      },
+      "props": {
+        "facing": "up",
+        "type": "sticky"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:quartz_block"
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 1,
+        "progress": 0.5,
+        "source": 0
+      },
+      "props": {
+        "facing": "up",
+        "type": "normal"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:sticky_piston",
+          "Properties": {
+            "extended": "false",
+            "facing": "east"
+          }
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 5,
+        "progress": 0,
+        "source": 1
+      },
+      "props": {
+        "facing": "east",
+        "type": "sticky"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:quartz_block"
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 5,
+        "progress": 0,
+        "source": 0
+      },
+      "props": {
+        "facing": "east",
+        "type": "normal"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:observer",
+          "Properties": {
+            "facing": "west",
+            "powered": "false"
+          }
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 1,
+        "progress": 0,
+        "source": 0
+      },
+      "props": {
+        "facing": "up",
+        "type": "normal"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:sticky_piston",
+          "Properties": {
+            "extended": "false",
+            "facing": "east"
+          }
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 5,
+        "progress": 0.5,
+        "source": 1
+      },
+      "props": {
+        "facing": "east",
+        "type": "sticky"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:quartz_block"
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 5,
+        "progress": 0.5,
+        "source": 0
+      },
+      "props": {
+        "facing": "east",
+        "type": "normal"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:observer",
+          "Properties": {
+            "facing": "west",
+            "powered": "false"
+          }
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 1,
+        "progress": 0.5,
+        "source": 0
+      },
+      "props": {
+        "facing": "up",
+        "type": "normal"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:sticky_piston",
+          "Properties": {
+            "extended": "false",
+            "facing": "down"
+          }
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 0,
+        "progress": 0,
+        "source": 0
+      },
+      "props": {
+        "facing": "down",
+        "type": "normal"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:sticky_piston",
+          "Properties": {
+            "extended": "false",
+            "facing": "down"
+          }
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 0,
+        "progress": 0.5,
+        "source": 0
+      },
+      "props": {
+        "facing": "down",
+        "type": "normal"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:piston",
+          "Properties": {
+            "extended": "false",
+            "facing": "south"
+          }
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 3,
+        "progress": 0,
+        "source": 1
+      },
+      "props": {
+        "facing": "south",
+        "type": "normal"
+      }
+    },
+    {
+      "name": "moving_piston",
+      "nbt": {
+        "blockState": {
+          "Name": "minecraft:piston",
+          "Properties": {
+            "extended": "false",
+            "facing": "south"
+          }
+        },
+        "components": {},
+        "extending": 0,
+        "facing": 3,
+        "progress": 0.5,
+        "source": 1
+      },
+      "props": {
+        "facing": "south",
+        "type": "normal"
+      }
+    }
+  ],
+  "size": [
+    7,
+    9,
+    3
+  ],
+  "ticks": 99,
+  "viewer": {
+    "facing": "north",
+    "pitch": 2.5499494075775146,
+    "pos": [
+      3.773144749055909,
+      2,
+      4.521021470560655
+    ],
+    "yaw": 175.979736328125
+  }
+}
