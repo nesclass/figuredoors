@@ -5,6 +5,7 @@ import './style.css';
 import { initUi } from './ui.js';
 import { initProgress } from './progress.js';
 import { initCaption } from './caption.js';
+import { mcMessage } from './mcfont.js';
 
 // ---- knobs worth playing with -------------------------------------------------
 const TICK_MS = 100;        // one game tick on screen (the game runs at 50)
@@ -102,17 +103,34 @@ class Slot {
     this.phaseStart = performance.now();
     this.manual = false;  // the visitor has taken over the lever: no more loop
     this.running = false; // a clip is playing right now
+    this.ticks = 0;       // how far into it, in game ticks
     this.player.setClip(phases[0].clip);
   }
 
-  // Flips the lever by hand. Does nothing while the door is still moving. The
-  // first flip turns the automatic loop off for this door.
+  // A press on the lever. The first one takes the door over: the automatic
+  // loop is off from then on. If the door is moving, the press does no more
+  // than that - the move plays out and the door waits. If it is at rest, the
+  // lever flips and the next clip starts.
   toggle(now) {
+    if (!this.manual) {
+      this.manual = true;
+      // By hand a clip has no hold in front of it; keep the running one in step.
+      if (this.running) this.phaseStart += phases[this.phase].hold;
+    }
     if (this.running) return false;
-    this.manual = true;
     this.running = true;
     this.phaseStart = now;
     return true;
+  }
+
+  // How long one game tick of the current clip lasts on screen.
+  tickMs() {
+    return Math.min(TICK_MS, MAX_CLIP_MS / this.player.length);
+  }
+
+  // Game ticks until the door comes to rest.
+  ticksLeft() {
+    return this.running ? Math.ceil(this.player.length - this.ticks) : 0;
   }
 
   // Where the door's lever (or button) is right now, in world space.
@@ -144,10 +162,10 @@ class Slot {
     // By hand a clip starts at the flip and the door then waits for the next
     // one; in the loop it starts after the hold and the next phase follows.
     if (this.manual && !this.running) return;
-    const tickMs = Math.min(TICK_MS, MAX_CLIP_MS / player.length);
-    const ticks = (now - this.phaseStart - (this.manual ? 0 : hold)) / tickMs;
+    const ticks = (now - this.phaseStart - (this.manual ? 0 : hold)) / this.tickMs();
     player.setTime(ticks);
     this.running = ticks > 0 && ticks < player.length;
+    this.ticks = ticks;
     if (ticks >= player.length) {
       this.phase = (this.phase + 1) % phases.length;
       this.phaseStart = now;
@@ -273,10 +291,40 @@ function overLever(e) {
     return Math.hypot(e.clientX - x, e.clientY - y) < reach;
   });
 }
+// A press that comes while the door is moving does nothing. The reason is
+// printed under the door the way the server prints it in chat, with the game
+// ticks left. It goes away when the door comes to rest, give or take: never
+// sooner than it can be read, never later than CHAT_MAX_MS.
+const CHAT_MIN_MS = 900;
+const CHAT_MAX_MS = 2000;
+const RED = '#ff5555', BLUE = '#55aaff', GREY = '#aaaaaa';
+const chat = document.querySelector('#chat');
+let chatUntil = 0;
+let chatSeq = 0;
+function sayBusy(now) {
+  const ticks = Math.max(1, current.ticksLeft());
+  const runs = [
+    { text: '[', color: GREY }, { text: '!', color: RED }, { text: '] ', color: GREY },
+    { text: 'This input is still cooling down. Please wait another ', color: RED },
+    { text: `${ticks} ${ticks === 1 ? 'tick' : 'ticks'}`, color: BLUE },
+    { text: ' before trying again.', color: RED },
+  ];
+  // Plain coloured text first; the game's font replaces it as soon as it is drawn.
+  chat.replaceChildren(...runs.map(({ text, color }) => Object.assign(document.createElement('span'), { textContent: text, style: `color: ${color}` })));
+  const seq = ++chatSeq;
+  mcMessage(runs, { maxWidth: Math.min(viewW - 42, 640) }).then((message) => { if (message && seq === chatSeq) chat.replaceChildren(message); });
+  chatUntil = now + Math.min(CHAT_MAX_MS, Math.max(CHAT_MIN_MS, ticks * current.tickMs()));
+}
+function stepChat(now) {
+  if (chatUntil && (now > chatUntil || move)) chatUntil = 0;
+  chat.classList.toggle('is-on', chatUntil > 0);
+}
+
 let swiped = false; // the click that ends a swipe is not a click on the lever
 canvas.addEventListener('click', (e) => {
   if (swiped) { swiped = false; return; }
-  if (overLever(e)) current.toggle(performance.now());
+  const now = performance.now();
+  if (overLever(e) && !current.toggle(now)) sayBusy(now);
 });
 canvas.addEventListener('pointermove', (e) => {
   if (e.pointerType === 'mouse') canvas.classList.toggle('is-over-lever', !drag?.active && overLever(e));
@@ -383,6 +431,7 @@ function frame(now) {
 
   current.play(now, debug.freeze);
   other?.play(now, null);
+  stepChat(now);
 
   if (!still) drift.lerp(pointer, 0.06);
   camera.position.set(-drift.x * PARALLAX, -drift.y * PARALLAX, fit + depth / 2);

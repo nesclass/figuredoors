@@ -83,3 +83,84 @@ export async function mcText(text, { color = '#ffffff', shadow = 'rgba(0, 0, 0, 
   canvas.setAttribute('aria-label', text);
   return canvas;
 }
+
+// A sheet of the font in one colour, made once per colour.
+const tinted = new Map();
+function inkedSheet(font, color) {
+  let sheet = tinted.get(color);
+  if (sheet) return sheet;
+  sheet = document.createElement('canvas');
+  sheet.width = sheet.height = font.img.width;
+  const ctx = sheet.getContext('2d');
+  ctx.drawImage(font.img, 0, 0);
+  ctx.globalCompositeOperation = 'source-in';
+  ctx.fillStyle = color;
+  ctx.fillRect(0, 0, sheet.width, sheet.height);
+  tinted.set(color, sheet);
+  return sheet;
+}
+
+// The game shades every letter with its own colour at a quarter strength.
+function shadeOf(color) {
+  const n = parseInt(color.slice(1), 16);
+  return `rgb(${(n >> 16) >> 2}, ${((n >> 8) & 255) >> 2}, ${(n & 255) >> 2})`;
+}
+
+// A chat message: runs of text in different colours ([{text, color: '#rrggbb'}]),
+// wrapped to maxWidth screen pixels the way the game wraps chat. Resolves to a
+// canvas, or to null when the font is not there (see mcText).
+export async function mcMessage(runs, { maxWidth = 600, scale = 2 } = {}) {
+  const font = await loadSheet();
+  if (!font) return null;
+  const { cell, widths } = font;
+  const LINE = cell + 1;
+  // Words keep their colour; a space belongs to the word in front of it.
+  const words = [];
+  for (const { text, color } of runs) {
+    for (const part of text.match(/\S+\s*|\s+/g) ?? []) {
+      const codes = [...part].map((c) => c.charCodeAt(0));
+      if (codes.some((c) => c > 255 || !widths[c])) return null;
+      const solid = part.trimEnd().length;
+      words.push({
+        codes, color,
+        width: codes.reduce((sum, c) => sum + widths[c] + 1, 0),
+        inked: codes.slice(0, solid).reduce((sum, c) => sum + widths[c] + 1, 0),
+      });
+    }
+  }
+  const limit = Math.max(40, Math.floor(maxWidth / scale));
+  const lines = [[]];
+  let x = 0;
+  for (const word of words) {
+    if (x > 0 && x + word.inked > limit) { lines.push([]); x = 0; }
+    lines[lines.length - 1].push({ word, x });
+    x += word.width;
+  }
+  const width = Math.max(...lines.map((line) => { const last = line[line.length - 1]; return last ? last.x + last.word.inked : 0; }));
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width + 1;
+  canvas.height = lines.length * LINE + 1;
+  const ctx = canvas.getContext('2d');
+  const draw = (shade) => {
+    lines.forEach((line, row) => {
+      for (const { word, x: x0 } of line) {
+        const sheet = inkedSheet(font, shade ? shadeOf(word.color) : word.color);
+        let at = x0;
+        for (const c of word.codes) {
+          if (c !== 32) ctx.drawImage(sheet, (c % 16) * cell, Math.floor(c / 16) * cell, widths[c], cell, at + (shade ? 1 : 0), row * LINE + (shade ? 2 : 1), widths[c], cell);
+          at += widths[c] + 1;
+        }
+      }
+    });
+  };
+  draw(true);
+  draw(false);
+  canvas.className = 'mc-text';
+  canvas.style.width = `${canvas.width * scale}px`;
+  canvas.style.height = `${canvas.height * scale}px`;
+  canvas.setAttribute('role', 'img');
+  canvas.setAttribute('aria-label', runs.map((r) => r.text).join(''));
+  return canvas;
+}
+

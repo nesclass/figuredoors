@@ -65,7 +65,27 @@ html, body {
   touch-action: none; /* a sideways drag flips to the next door */
 }
 #scene.is-over-lever { cursor: pointer; }
-#scene.is-dragging { cursor: grabbing; }
+
+/* A line under the door, the way the game prints a chat message: it says why
+   a press on the lever did nothing, then fades. */
+.chat {
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  z-index: 1;
+  max-width: calc(100% - 24px);
+  width: max-content;
+  padding: 5px 9px 6px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font: 400 20px / 1.1 var(--display);
+  pointer-events: none;
+  transform: translateX(-50%);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 250ms ease-out, visibility 0s linear 250ms;
+}
+.chat.is-on { opacity: 1; visibility: visible; transition: opacity 80ms ease-out; }
 
 /* ---- under the door: which figure, who built it, the way on ---------------- */
 
