@@ -55,15 +55,15 @@ if (style !== 'drawn' && /^[\w-]+$/.test(style)) {
 const base = import.meta.env.BASE_URL;
 const manifest = await (await fetch(`${base}doors/index.json`)).json();
 const wanted = params.get('door');
-// The carousel runs over the figures. Anything else (a test recording, a door
-// marked "carousel": false) plays alone, and only when asked for by name.
+// Without ?door= the carousel runs over the figures, starting with FIRST.
+// ?door=<id> shows that one door and nothing else: no carousel. That is also
+// the only way to see a test recording or a door marked "carousel": false.
 let ids = manifest.filter((d) => !d.solo && /^[01]{3}-[01]{3}-[01]{3}$/.test(d.id)).map((d) => d.id);
-let index = ids.indexOf(wanted);
-if (index < 0 && manifest.some((d) => d.id === wanted)) {
+let index = Math.max(0, ids.indexOf(FIRST));
+if (manifest.some((d) => d.id === wanted)) {
   ids = [wanted];
   index = 0;
 }
-if (index < 0) index = Math.max(0, ids.indexOf(FIRST));
 const neighbour = (dir) => ids[(index + dir + ids.length) % ids.length];
 
 const files = new Map();
@@ -199,9 +199,6 @@ function commit() {
   const id = ids[index];
   caption.show(id);
   progress?.select(bitsOf(id));
-  const url = new URL(location.href);
-  url.searchParams.set('door', id);
-  history.replaceState(null, '', url);
   // Have both neighbours ready before they are asked for.
   loadDoor(neighbour(1));
   loadDoor(neighbour(-1));
